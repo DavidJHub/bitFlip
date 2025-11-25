@@ -109,14 +109,14 @@ def main() -> None:
         with st.expander("Imagen / memoria", expanded=True):
             base_rate = st.number_input(
                 "Tasa base por bit (errores/bit·hora)",
-                min_value=1e-14,
-                max_value=1e-6,
-                value=1e-12,
+                min_value=1e-16,
+                max_value=1e-5,
+                value=1e-7,
                 format="%.1e",
                 key="img_base_rate",
             )
             altitude = st.slider(
-                "Altitud [m]", min_value=0, max_value=12000, value=3000, step=250, key="img_altitude"
+                "Altitud [m]", min_value=0, max_value=12000, value=7000, step=250, key="img_altitude"
             )
             hours = st.slider(
                 "Tiempo total simulado [h]", min_value=0.01, max_value=24.0, value=1.0, step=0.01, key="img_hours"
