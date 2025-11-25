@@ -1,6 +1,6 @@
 # bitFlip
 
-Prototipo educativo para simular cómo los rayos cósmicos pueden provocar **bit flips** en memoria y visualizar el efecto sobre una imagen. Usa Streamlit para ajustar parámetros como altitud, tiempo de exposición, tasa base de errores y reproducir una animación que muestra la corrupción progresiva.
+Prototipo educativo para simular cómo los rayos cósmicos pueden provocar **bit flips** en memoria y visualizar el efecto sobre una imagen. Usa Streamlit para ajustar parámetros como altitud, tiempo de exposición y tasa base de errores.
 
 ## Requisitos
 
@@ -21,4 +21,4 @@ Inicia la aplicación local de Streamlit:
 streamlit run app.py
 ```
 
-Después abre la URL que te indique la consola (por defecto http://localhost:8501). Puedes subir tu propia imagen o usar alguno de los ejemplos (gradiente, cuadrícula binaria o texto). Ajusta altitud, tiempo, número de frames y tasa base; luego reproduce la animación o usa el selector temporal para ver cómo se va corrompiendo la imagen y cómo crece la probabilidad de fallo.
+Después abre la URL que te indique la consola (por defecto http://localhost:8501). Puedes subir tu propia imagen o usar el gradiente de ejemplo. Ajusta altitud, tiempo y tasa base para observar las probabilidades de fallo y cómo se corrompe la imagen.
