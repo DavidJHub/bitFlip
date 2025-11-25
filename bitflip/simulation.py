@@ -26,6 +26,17 @@ class SimulationResult:
     total_bits: int
 
 
+@dataclass
+class AnimationFrame:
+    """Snapshot of the simulation state at a specific time."""
+
+    image: Image.Image
+    time_hours: float
+    expected_errors: float
+    observed_errors: int
+    probability_at_least_one: float
+
+
 def _flip_bits(bytes_view: np.ndarray, bit_indices: Iterable[int]) -> None:
     for idx in bit_indices:
         byte_index = idx // 8
@@ -94,3 +105,54 @@ def probability_curve(
     hours_array = np.array(list(hours_points), dtype=float)
     mu_values = total_rate * hours_array
     return 1 - np.exp(-mu_values)
+
+
+def simulate_bit_flips_over_time(
+    image: Image.Image,
+    altitude_m: float,
+    total_hours: float,
+    steps: int,
+    base_rate_per_bit: float = 1e-12,
+    seed: Optional[int] = None,
+) -> list[AnimationFrame]:
+    """Simulate progressive corruption over time, returning snapshots for an animation."""
+
+    if steps < 1:
+        raise ValueError("steps must be >= 1")
+
+    rgb_image = image.convert("RGB")
+    arr = np.array(rgb_image)
+    bytes_view = arr.view(np.uint8).reshape(-1)
+    num_bits = int(bytes_view.size * 8)
+
+    rng = np.random.default_rng(seed)
+    total_rate = total_error_rate_per_hour(base_rate_per_bit, altitude_m, num_bits)
+    step_hours = float(total_hours) / steps
+
+    frames: list[AnimationFrame] = []
+    cumulative_errors = 0
+
+    for step in range(1, steps + 1):
+        mu_step = total_rate * step_hours
+        observed_step = int(rng.poisson(mu_step))
+        cumulative_errors += observed_step
+
+        if observed_step > 0:
+            bit_indices = rng.integers(0, num_bits, size=observed_step)
+            _flip_bits(bytes_view, bit_indices)
+
+        cumulative_mu = total_rate * (step_hours * step)
+        probability_at_least_one = 1 - float(np.exp(-cumulative_mu))
+
+        frame_image = Image.fromarray(bytes_view.reshape(arr.shape).astype(np.uint8), mode="RGB")
+        frames.append(
+            AnimationFrame(
+                image=frame_image,
+                time_hours=step_hours * step,
+                expected_errors=cumulative_mu,
+                observed_errors=cumulative_errors,
+                probability_at_least_one=probability_at_least_one,
+            )
+        )
+
+    return frames
