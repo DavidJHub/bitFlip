@@ -94,7 +94,7 @@ def main() -> None:
     st.set_page_config(page_title="bitFlip - Rayos cósmicos", layout="wide")
     st.title("Simulador de bit flips por rayos cósmicos")
     st.write(
-        "Explora cómo cambian las tasas de error al modificar altitud, tiempo de exposición y el tamaño en bits de una imagen."
+        "cómo cambian las tasas de error al modificar altitud, tiempo de exposición y el tamaño en bits de una imagen."
     )
 
     default_dna_sequence = (
@@ -197,7 +197,7 @@ def main() -> None:
         )
         frame_labels = [f"{frame.time_hours:.2f} h" for frame in frames]
         selected_label = st.select_slider(
-            "Explora cómo se va corrompiendo la imagen con el tiempo",
+            "---------------------------------",
             options=frame_labels,
             value=frame_labels[-1],
         )
@@ -208,19 +208,19 @@ def main() -> None:
         col1, col2 = st.columns(2)
         with col1:
             st.subheader("Imagen original")
-            st.image(image, use_column_width=True)
+            st.image(image, use_container_width=True)
         with col2:
             st.subheader("Imagen corrompida / animación")
             anim_placeholder = st.empty()
             anim_placeholder.image(
-                current_frame.image, use_column_width=True, caption=f"t = {current_frame.time_hours:.2f} h"
+                current_frame.image, use_container_width=True, caption=f"t = {current_frame.time_hours:.2f} h"
             )
 
             if st.button("Reproducir animación", type="primary"):
                 for frame in frames:
                     anim_placeholder.image(
                         frame.image,
-                        use_column_width=True,
+                        use_container_width=True,
                         caption=f"t = {frame.time_hours:.2f} h — errores acumulados: {frame.observed_errors}",
                     )
                     time.sleep(0.35)
@@ -249,22 +249,9 @@ def main() -> None:
         st.line_chart(df, x="Horas", y="Probabilidad")
 
         st.caption(
-            "Prototipo educativo: ajusta los parámetros y observa cómo aumenta la probabilidad de fallos y los artefactos visuales."
-        )
+""        )
 
-        st.markdown("---")
-        st.subheader("Ideas visuales para hablar de rayos cósmicos")
-        st.write(
-            "Experimenta también con:"
-        )
-        st.markdown(
-            """
-            - **SRAM tipo caché**: usa la cuadrícula binaria para ilustrar celdas alternas y ver cómo saltan los errores.
-            - **Textos o logos**: elige el ejemplo de texto para mostrar cómo aparecen artefactos incluso en mensajes cortos.
-            - **Imágenes en escala de grises o mapas térmicos**: sube una imagen de sensores para visualizar cómo un único bit altera mediciones.
-            - **Animación de fallos acumulados**: reproduce la animación para comparar oficina vs avión vs órbita baja cambiando la altitud.
-            """
-        )
+
 
     with dna_tab:
         st.subheader("Biosimulación: mutaciones de ADN por rayos cósmicos")
@@ -321,13 +308,7 @@ def main() -> None:
         dna_df = pd.DataFrame({"Horas": dna_hours_range, "Probabilidad": dna_prob_curve})
         st.line_chart(dna_df, x="Horas", y="Probabilidad")
 
-        st.markdown(
-            """
-            - Cambia la altitud para comparar mutaciones en laboratorio vs avión vs órbita.
-            - Aumenta el número de horas para ver cómo crecen las mutaciones acumuladas en cadenas largas.
-            - Genera secuencias aleatorias para ilustrar genomas hipotéticos y resaltar mutaciones puntuales.
-            """
-        )
+
 
 
 if __name__ == "__main__":
